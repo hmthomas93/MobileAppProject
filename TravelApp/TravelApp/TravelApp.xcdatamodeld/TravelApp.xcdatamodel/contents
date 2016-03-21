@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F27" minimumToolsVersion="Automatic">
+    <entity name="Comment" syncable="YES">
+        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="posterName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="posterPhoto" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="post" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MainPost" inverseName="comments" inverseEntity="MainPost" syncable="YES"/>
+    </entity>
+    <entity name="MainPost" syncable="YES">
+        <attribute name="attraction" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="placePhoto" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="postDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comment" inverseName="post" inverseEntity="Comment" syncable="YES"/>
+        <relationship name="poster" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="posts" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="User" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photo" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="posts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MainPost" inverseName="poster" inverseEntity="MainPost" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Comment" positionX="106" positionY="54" width="128" height="118"/>
+        <element name="MainPost" positionX="-81" positionY="-0" width="128" height="163"/>
+        <element name="User" positionX="-290" positionY="-54" width="128" height="133"/>
+    </elements>
+</model>
