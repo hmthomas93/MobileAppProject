@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		57DAA7611CB369AB004B33A9 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DAA75F1CB369AB004B33A9 /* User+CoreDataProperties.swift */; };
+		57DAA7621CB369AB004B33A9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DAA7601CB369AB004B33A9 /* User.swift */; };
+		57DAA7671CB36B1C004B33A9 /* MasterData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DAA7661CB36B1C004B33A9 /* MasterData.swift */; };
 		C502350D1C9B6BB400C6BE79 /* account.png in Resources */ = {isa = PBXBuildFile; fileRef = C50235041C9B6BB400C6BE79 /* account.png */; };
 		C502350E1C9B6BB400C6BE79 /* account@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C50235051C9B6BB400C6BE79 /* account@2x.png */; };
 		C502350F1C9B6BB400C6BE79 /* account@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = C50235061C9B6BB400C6BE79 /* account@3x.png */; };
@@ -59,6 +62,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		57DAA75F1CB369AB004B33A9 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		57DAA7601CB369AB004B33A9 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		57DAA7661CB36B1C004B33A9 /* MasterData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterData.swift; sourceTree = "<group>"; };
 		C50235041C9B6BB400C6BE79 /* account.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = account.png; sourceTree = "<group>"; };
 		C50235051C9B6BB400C6BE79 /* account@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "account@2x.png"; sourceTree = "<group>"; };
 		C50235061C9B6BB400C6BE79 /* account@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "account@3x.png"; sourceTree = "<group>"; };
@@ -124,6 +130,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		57DAA7651CB36A32004B33A9 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				57DAA75F1CB369AB004B33A9 /* User+CoreDataProperties.swift */,
+				57DAA7601CB369AB004B33A9 /* User.swift */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+		57DAA7681CB36B2D004B33A9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				57DAA7661CB36B1C004B33A9 /* MasterData.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		C50235031C9B6BB400C6BE79 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,11 +191,13 @@
 				C5D133061C9A5419004980F0 /* AppDelegate.swift */,
 				C5D133081C9A5419004980F0 /* ViewController.swift */,
 				C584B6F41C9A8A020091B1A3 /* SignUpViewController.swift */,
+				57DAA7681CB36B2D004B33A9 /* Model */,
 				C5D1330A1C9A5419004980F0 /* Main.storyboard */,
 				C5D133101C9A5419004980F0 /* Assets.xcassets */,
 				C5D133121C9A5419004980F0 /* LaunchScreen.storyboard */,
 				C5D133151C9A5419004980F0 /* Info.plist */,
 				C5D1330D1C9A5419004980F0 /* TravelApp.xcdatamodeld */,
+				57DAA7651CB36A32004B33A9 /* CoreData */,
 				C50235161C9B6D9000C6BE79 /* HomeViewController.swift */,
 				C541FC1F1C9DDF58003261E3 /* AddEditPostViewController.swift */,
 				C54F4FF51C9DC953001EB841 /* MainPostViewController.swift */,
@@ -350,6 +375,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C541FC201C9DDF58003261E3 /* AddEditPostViewController.swift in Sources */,
+				57DAA7671CB36B1C004B33A9 /* MasterData.swift in Sources */,
 				C5A2E38F1C9DBF27004CFC59 /* MyPhotosTableViewCell.swift in Sources */,
 				C541FC221C9DDF64003261E3 /* EditCommentViewController.swift in Sources */,
 				C584B6F51C9A8A020091B1A3 /* SignUpViewController.swift in Sources */,
@@ -357,6 +383,7 @@
 				C5D538C11C9CE50A006862E8 /* MainPostTableViewCell.swift in Sources */,
 				C59588D91C9CDFD300DFFBBA /* MyPhotosDetailViewController.swift in Sources */,
 				C54F4FF61C9DC953001EB841 /* MainPostViewController.swift in Sources */,
+				57DAA7611CB369AB004B33A9 /* User+CoreDataProperties.swift in Sources */,
 				C50C50141C9BB9F300562679 /* ChangePassViewController.swift in Sources */,
 				C5D133091C9A5419004980F0 /* ViewController.swift in Sources */,
 				C5C28EC01C9DEB89007DEC59 /* ShowMapViewController.swift in Sources */,
@@ -366,6 +393,7 @@
 				C5D133071C9A5419004980F0 /* AppDelegate.swift in Sources */,
 				C5D1330F1C9A5419004980F0 /* TravelApp.xcdatamodeld in Sources */,
 				C50235171C9B6D9000C6BE79 /* HomeViewController.swift in Sources */,
+				57DAA7621CB369AB004B33A9 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
