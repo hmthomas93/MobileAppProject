@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2178955E1CC493470022F4EC /* MainPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2178955D1CC493470022F4EC /* MainPost.swift */; };
 		57DAA7611CB369AB004B33A9 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DAA75F1CB369AB004B33A9 /* User+CoreDataProperties.swift */; };
 		57DAA7621CB369AB004B33A9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DAA7601CB369AB004B33A9 /* User.swift */; };
 		57DAA7671CB36B1C004B33A9 /* MasterData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DAA7661CB36B1C004B33A9 /* MasterData.swift */; };
@@ -62,6 +63,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2178955D1CC493470022F4EC /* MainPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPost.swift; sourceTree = "<group>"; };
 		57DAA75F1CB369AB004B33A9 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		57DAA7601CB369AB004B33A9 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		57DAA7661CB36B1C004B33A9 /* MasterData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterData.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 			children = (
 				57DAA75F1CB369AB004B33A9 /* User+CoreDataProperties.swift */,
 				57DAA7601CB369AB004B33A9 /* User.swift */,
+				2178955D1CC493470022F4EC /* MainPost.swift */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				C541FC201C9DDF58003261E3 /* AddEditPostViewController.swift in Sources */,
 				57DAA7671CB36B1C004B33A9 /* MasterData.swift in Sources */,
 				C5A2E38F1C9DBF27004CFC59 /* MyPhotosTableViewCell.swift in Sources */,
+				2178955E1CC493470022F4EC /* MainPost.swift in Sources */,
 				C541FC221C9DDF64003261E3 /* EditCommentViewController.swift in Sources */,
 				C584B6F51C9A8A020091B1A3 /* SignUpViewController.swift in Sources */,
 				C5491B091C9CCCF40002A5A4 /* PlaceAnnotation.swift in Sources */,
