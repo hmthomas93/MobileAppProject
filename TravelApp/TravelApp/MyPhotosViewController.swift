@@ -14,11 +14,17 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var signOutButton: UIBarButtonItem!
     @IBOutlet weak var placesMap: MKMapView!
     @IBOutlet weak var mapTypeControl: UISegmentedControl!
+    
+    var account : User!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.placesMap.delegate = self
         self.placesMap.mapType = MKMapType.Standard
+        
+        account = MasterData.sharedInstance.currentUserProfile
+        
         showPlaces()
         
         // Do any additional setup after loading the view.
@@ -38,20 +44,28 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
         }
     }
     func showPlaces() {
-        let location = "Chandler, AZ"
-        //let address = ( sender as! NSString)
         
-        var geocoder = CLGeocoder()
-        geocoder.geocodeAddressString (location as String, completionHandler: {(placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-            if let placemark = placemarks?[0] as? CLPlacemark? {
-                let span = MKCoordinateSpanMake(0.05, 0.05)
-                let region = MKCoordinateRegion(center: placemark!.location!.coordinate, span: span)
-                self.placesMap.setRegion(region, animated: true)
+        // get all posts from the current user
+        let posts = account.mutableSetValueForKey("posts")
+        
+        for locations in posts {
+            let city = locations.valueForKey("city") as? String
+            let state = locations.valueForKey("state") as? String
+            
+            let location = city! + ", " + state!
+        
+            var geocoder = CLGeocoder()
+            geocoder.geocodeAddressString (location as String, completionHandler: {(placemarks:         [CLPlacemark]?, error: NSError?) -> Void in
+                if let placemark = placemarks?[0] as? CLPlacemark? {
+                    let span = MKCoordinateSpanMake(0.05, 0.05)
+                    let region = MKCoordinateRegion(center: placemark!.location!.coordinate, span: span)
+                    self.placesMap.setRegion(region, animated: true)
                 
-                let newAnnotation = PlaceAnnotation(t: "abc", s: "def", c: placemark!.location!.coordinate)
-                self.placesMap.addAnnotation(newAnnotation)
-            }
-        })
+                    let newAnnotation = PlaceAnnotation(t: "abc", s: "def", c: placemark!.location!.coordinate)
+                    self.placesMap.addAnnotation(newAnnotation)
+                }
+            })
+        }
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
