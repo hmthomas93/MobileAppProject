@@ -14,12 +14,47 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var signOutButton: UIBarButtonItem!
     @IBOutlet weak var placesMap: MKMapView!
     @IBOutlet weak var mapTypeControl: UISegmentedControl!
+    
+    //dictionary so identical places are not mapped twice
+    var placeList = [String: [MainPost]]()
+    
+    //selected place
+    var selectedPlace = [MainPost]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.placesMap.delegate = self
         self.placesMap.mapType = MKMapType.Standard
-        showPlaces()
+        
+        let currentAccount = MasterData.sharedInstance.currentUserProfile
+        let places = (currentAccount?.posts?.allObjects)! as! [MainPost]
+        
+        if places.count > 0 {
+            //group identical places
+            var placeKey = ""
+            for place in places {
+                if place.latitude != 1000 {
+                    placeKey = ""
+                    if place.attraction != "" {
+                        placeKey = place.attraction! + " in "
+                    }
+                    placeKey += place.city! + ", " + place.state!
+                    
+                    if placeList[placeKey] == nil {
+                        placeList[placeKey] = []
+                    }
+                    placeList[placeKey]?.append(place)
+                }
+            }
+            
+            showPlaces()
+        }
+        else {
+            let alert = UIAlertController(title: "No Places", message: "You have not added any places yet.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
         
         // Do any additional setup after loading the view.
     }
@@ -38,20 +73,66 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
         }
     }
     func showPlaces() {
-        let location = "Chandler, AZ"
-        //let address = ( sender as! NSString)
+        let padding = 0.1
+        var minLat:CLLocationDegrees = 1000
+        var maxLat:CLLocationDegrees = -1000
+        var minLon:CLLocationDegrees = 1000
+        var maxLon:CLLocationDegrees = -1000
         
-        var geocoder = CLGeocoder()
-        geocoder.geocodeAddressString (location as String, completionHandler: {(placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-            if let placemark = placemarks?[0] as? CLPlacemark? {
-                let span = MKCoordinateSpanMake(0.05, 0.05)
-                let region = MKCoordinateRegion(center: placemark!.location!.coordinate, span: span)
-                self.placesMap.setRegion(region, animated: true)
+        //get bounds
+        for (name, places) in placeList {
+            if places.count > 0 {
+                let place = places[0]
+                if CLLocationDegrees(place.latitude!) < minLat {
+                    minLat = CLLocationDegrees(place.latitude!)
+                }
+                if CLLocationDegrees(place.latitude!) > maxLat {
+                    maxLat = CLLocationDegrees(place.latitude!)
+                }
                 
-                let newAnnotation = PlaceAnnotation(t: "abc", s: "def", c: placemark!.location!.coordinate)
-                self.placesMap.addAnnotation(newAnnotation)
+                if CLLocationDegrees(place.longitude!) < minLon {
+                    minLon = CLLocationDegrees(place.longitude!)
+                }
+                if CLLocationDegrees(place.longitude!) > maxLon {
+                    maxLon = CLLocationDegrees(place.longitude!)
+                }
             }
-        })
+        }
+        
+        //add padding to bounds
+        minLat -= padding
+        maxLat += padding
+        minLon -= padding
+        maxLon += padding
+        
+        let centerLat = (minLat + maxLat) / 2.0
+        let centerLon = (minLon + maxLon) / 2.0
+        
+        let spanLat = maxLat - minLat
+        let spanLon = maxLon - minLon
+        
+        //now set map bounds
+        var coordinates = CLLocationCoordinate2DMake(centerLat, centerLon)
+        
+        let span = MKCoordinateSpanMake(spanLat, spanLon)
+        let region = MKCoordinateRegion(center: coordinates, span: span)
+        self.placesMap.setRegion(region, animated: true)
+        
+        //now add the pins
+        for (name, places) in placeList {
+            if places.count > 0 {
+                let place = places[0]
+                coordinates = CLLocationCoordinate2DMake(CLLocationDegrees(place.latitude!), CLLocationDegrees(place.longitude!))
+                if place.attraction != "" {
+                    let newAnnotation = PlaceAnnotation(t: place.attraction!, s: place.city! + ", " + place.state!, c: coordinates)
+                    self.placesMap.addAnnotation(newAnnotation)
+                }
+                else {
+                    let newAnnotation = PlaceAnnotation(t: place.city! + ", " + place.state!, s: "", c: coordinates)
+                    self.placesMap.addAnnotation(newAnnotation)
+                }
+            }
+        }
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -66,18 +147,6 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
                 
                 let btn = UIButton(type: .DetailDisclosure)
                 annotationView!.rightCalloutAccessoryView = btn
-                
-                /*let img = UIImage(named: placePhotoName)
-                let imgView = UIImageView(image: img)
-                
-                //compute image size
-                let divider:Double = Double(max(imgView.frame.width, imgView.frame.height)) / 32.0
-                let newWidth:Double = Double(imgView.frame.width) / divider
-                let newHeight:Double = Double(imgView.frame.height) / divider
-                let widthOffset:Double = (32.0 - newWidth)/2.0
-                let heightOffset:Double = (32.0 - newHeight)/2.0
-                imgView.frame = CGRect(x: widthOffset, y: heightOffset, width: newWidth , height: newHeight)
-                annotationView!.leftCalloutAccessoryView = imgView*/
             } else {
                 annotationView!.annotation = annotation
             }
@@ -90,12 +159,14 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         let place = view.annotation as! PlaceAnnotation
-        let placeName = place.title
-        let placeInfo = place.subtitle
         
-        //let ac = UIAlertController(title: "Hello", message: "I am me.", preferredStyle: .Alert)
-        //ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        //presentViewController(ac, animated: true, completion: nil)
+        var placeName = place.title!
+        if place.subtitle != "" {
+            placeName += " in " + place.subtitle!
+        }
+        
+        //this gets the place selected and goes to the next page
+        selectedPlace = placeList[placeName]!
         performSegueWithIdentifier("showPhotoDetailSegue", sender: control)
     }
     
@@ -117,7 +188,7 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
             
         }
         else if(segue.identifier! == "showPhotoDetailSegue") {
-            
+            //pass the data to the detail view
         }
     }
     

@@ -7,15 +7,78 @@
 //
 
 import UIKit
+import CoreData
 
-class MainPostViewController: UIViewController {
+class MainPostViewController: UIViewController, UITextViewDelegate, UpdatePostInfo, UpdateCommentInfo {
 
+    @IBOutlet weak var placePhoto: UIImageView!
+    @IBOutlet weak var personNameField: UILabel!
+    @IBOutlet weak var placeNameField: UILabel!
+    @IBOutlet weak var personPhoto: UIImageView!
+    @IBOutlet weak var postDateField: UILabel!
+    @IBOutlet weak var commentField: UILabel!
+    @IBOutlet weak var commentsTable: UITableView!
     @IBOutlet weak var commentTextArea: UITextView!
+    @IBOutlet weak var editPostButton: UIButton!
+    @IBOutlet weak var postHeight: NSLayoutConstraint!
+    
+    var currentPost:MainPost? = nil
+    var currentUserFName:String = String()
+    var currentUserLName:String = String()
+    var commentList = [Comment]()
+    
+    var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.commentTextArea.delegate = self
         self.commentTextArea.layer.borderWidth = 1
         self.commentTextArea.layer.borderColor = UIColor.lightGrayColor().CGColor
+        
+        if currentPost != nil {
+            personNameField.text = (currentPost?.poster!.firstName)! + " " + (currentPost?.poster!.lastName)!
+            var placeName = ""
+            if currentPost?.attraction != "" {
+                placeName += ((currentPost?.attraction)! + " in ")
+            }
+            placeName += (currentPost?.city)! + ", " + (currentPost?.state)!
+            placeNameField.text = placeName
+            
+            if currentPost?.placePhoto != nil {
+                placePhoto.image = UIImage(data: (currentPost?.placePhoto)! as NSData)
+            }
+            
+            if currentPost?.poster!.photo != nil {
+                personPhoto.image = UIImage(data: (currentPost?.poster!.photo)! as NSData)
+            }
+            
+            postDateField.text = currentPost?.postDate
+            commentField.text = currentPost?.commentText
+            
+            commentList = (currentPost?.comments?.allObjects)! as! [Comment]
+            
+            let currentAccount = MasterData.sharedInstance.currentUserProfile
+            currentUserFName = currentAccount!.valueForKey("firstName") as! String
+            currentUserLName = currentAccount!.valueForKey("lastName") as! String
+            
+            if currentPost?.poster?.firstName == currentUserFName && currentPost?.poster?.lastName == currentUserLName {
+                editPostButton.enabled = true
+                editPostButton.hidden = false
+            }
+            else {
+                editPostButton.enabled = false
+                editPostButton.hidden = true
+            }
+        }
+        
+        commentsTable.estimatedRowHeight = 100
+        commentsTable.rowHeight = UITableViewAutomaticDimension
+        
+        calculateCommentHeight()
+        
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "screenTouched:")
+        view.addGestureRecognizer(tap)
         // Do any additional setup after loading the view.
     }
 
@@ -24,62 +87,134 @@ class MainPostViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
+    func textViewDidBeginEditing(textView: UITextView) {
+        if self.view.frame.origin.y == 0.0 {
+            UIView.animateWithDuration(0.3, animations: {
+                self.view.frame.origin.y = self.view.frame.origin.y - 220
+            })
+        }
+    }
+    
+    func screenTouched(sender: UITapGestureRecognizer){
+        if self.view.frame.origin.y != 0.0 {
+            UIView.animateWithDuration(0.3, animations: {
+                self.view.frame.origin.y = self.view.frame.origin.y + 220
+            })
+        }
+        
+        //if the user tapped the table view, load the table view
+        let touch = sender.locationInView(commentsTable)
+        if let indexPath = commentsTable.indexPathForRowAtPoint(touch) {
+            let cell = commentsTable.cellForRowAtIndexPath(indexPath) as! CommentTableViewCell
+            if(cell.personName.text == currentUserFName + " " + currentUserLName) {
+                performSegueWithIdentifier("editComment", sender: cell)
+            }
+        }
+        
+        view.endEditing(true)
+    }
+    
+    //resize the height of the view based on comment length, since a comment can span multiple lines
+    func calculateCommentHeight() {
+        //the sizeToFit() method inaccurately resizes the label based on the text
+        //create a fake text label with a modified width and calculate its size
+        let label:UILabel = UILabel(frame: CGRectMake(0, 0, commentField.frame.width * 13.5 / 20, CGFloat.max))
+        //match all other properties of the comment field
+        label.numberOfLines = 0
+        label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        label.font = commentField.font
+        label.text = commentField.text
+        
+        label.sizeToFit()
+        //now recalculate the UIView's height
+        postHeight.constant += label.frame.height - 20 - 1/3
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        //let numberOfSections  = dataViewController.sections?.count
-        //return numberOfSections!
         return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //let numberOfRowsInSection = dataViewController.sections?[section].numberOfObjects
-        //return numberOfRowsInSection!
-        return 3
+        return (currentPost?.comments!.count)!
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("comment", forIndexPath: indexPath) as! CommentTableViewCell
-        /*let placeInfo = dataViewController.objectAtIndexPath(indexPath) as! Place
-        let name = placeInfo.name
-        let photo = placeInfo.photo
         
-        cell.placeName.text = name
-        if photo != nil {
-        cell.placePhoto.image = UIImage(data: (photo)! as NSData)
+        let commentInfo = commentList[indexPath.row]
+        cell.personName?.text = commentInfo.posterName
+        cell.postDate?.text = commentInfo.postDate
+        cell.comment?.text = commentInfo.commentText
+        
+        if commentInfo.posterPhoto != nil {
+            cell.personPhoto.image = UIImage(data: (commentInfo.posterPhoto)! as NSData)
         }
         else {
-        cell.placePhoto.image = nil
-        }*/
-        //dummy data
-        //cell.personPhoto.image = UIImage(named: "nophoto.png")
-        //cell.placePhoto.image = UIImage(named: "home.png")
-        if(cell.personName.text == "Poster Name") {
+            cell.personPhoto.image = UIImage(named: "nophoto.png")
+        }
+        
+        if(cell.personName.text == currentUserFName + " " + currentUserLName) {
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         }
+        
         return cell
         
     }
     
     func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
-        return true
+        return false
     }
     
-    func tableView(tableView: UITableView!, commitEditingStyle editingStyle:   UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
-        /*if (editingStyle == UITableViewCellEditingStyle.Delete) {
-        let record = dataViewController.objectAtIndexPath(indexPath) as! Place
-        context.deleteObject(record)
-        do {
-        try context.save()
-        } catch _ {
-        }
-        
-        }*/
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    //This method doesn't work with the UITapGestureRecognizer
+    //The code is now inside that method
+    /*func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let cell = tableView.cellForRowAtIndexPath(indexPath) as! CommentTableViewCell
-        if(cell.personName.text == "Poster Name") {
+        if(cell.personName.text == currentUserFName + " " + currentUserLName) {
             performSegueWithIdentifier("editComment", sender: cell)
+        }
+    }*/
+    
+    @IBAction func addComment(sender: UIButton) {
+        if (self.commentTextArea.text == ""){
+            let alert = UIAlertController(title: "Error!", message: "Please enter a comment to post.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else {
+            let context = self.context
+            let ent = NSEntityDescription.entityForName("Comment", inManagedObjectContext: context)
+            
+            let nItem = Comment(entity: ent!, insertIntoManagedObjectContext: context)
+            
+            let currentAccount = MasterData.sharedInstance.currentUserProfile
+            let firstName = currentAccount!.valueForKey("firstName") as! String
+            let lastName = currentAccount!.valueForKey("lastName") as! String
+            let imageData = currentAccount!.valueForKey("photo") as! NSData
+            
+            let currentDate = NSDate()
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
+            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
+            dateFormatter.locale = NSLocale(localeIdentifier: "en_US")
+            let stringDate = dateFormatter.stringFromDate(currentDate)
+            
+            nItem.posterName = firstName + " " + lastName
+            nItem.posterPhoto = imageData
+            nItem.commentText = self.commentTextArea.text!
+            nItem.postDate = stringDate
+            nItem.post = currentPost
+            
+            do {
+                try context.save()
+            } catch _ {
+            }
+            
+            //remove text from comment area after comment is posted
+            self.commentTextArea.text = ""
+            
+            //add the comment to the list of comments
+            commentList.append(nItem)
+            commentsTable.reloadData()
         }
     }
     
@@ -99,7 +234,64 @@ class MainPostViewController: UIViewController {
         if segue.identifier == "editPost" {
             var destinationController = segue.destinationViewController as! AddEditPostViewController
             destinationController.navigationItem.title = "Edit Post"
+            
+            destinationController.currentPost = currentPost
+            
+            destinationController.updatePostDelegate = self
+        }
+        else if segue.identifier == "editComment"
+        {
+            let selectedIndex: NSIndexPath = self.commentsTable.indexPathForCell(sender as! UITableViewCell)!
+            let row = commentList[selectedIndex.row]
+            let dest: EditCommentViewController =  segue.destinationViewController as! EditCommentViewController
+            dest.currentComment = row
+            
+            dest.updateCommentDelegate = self
+        }
+        else if segue.identifier == "showMap"
+        {
+            var destinationController = segue.destinationViewController as! ShowMapViewController
+            destinationController.lat = Double((currentPost?.latitude)!)
+            destinationController.lon = Double((currentPost?.longitude)!)
+            
+            if currentPost?.attraction != "" {
+                destinationController.attractionName = (currentPost?.attraction)!
+            }
+            else {
+                destinationController.attractionName = ""
+            }
+            destinationController.placeName = (currentPost?.city)! + ", " + (currentPost?.state)!
         }
     }
 
+    //update the current post with data passed from editing a post
+    func sendPostToMainPost(updatedPost: MainPost) {
+        currentPost = updatedPost
+        
+        personNameField.text = (currentPost?.poster!.firstName)! + " " + (currentPost?.poster!.lastName)!
+        var placeName = ""
+        if currentPost?.attraction != nil {
+            placeName += ((currentPost?.attraction)! + " in ")
+        }
+        placeName += (currentPost?.city)! + ", " + (currentPost?.state)!
+        placeNameField.text = placeName
+        
+        if currentPost?.placePhoto != nil {
+            placePhoto.image = UIImage(data: (currentPost?.placePhoto)! as NSData)
+        }
+        
+        if currentPost?.poster!.photo != nil {
+            personPhoto.image = UIImage(data: (currentPost?.poster!.photo)! as NSData)
+        }
+        
+        postDateField.text = currentPost?.postDate
+        commentField.text = currentPost?.commentText
+    }
+    
+    func sendCommentToMainPost(updatedComment: Comment, index: Int) {
+        commentList[index] = updatedComment
+        commentsTable.reloadData()
+        
+        calculateCommentHeight()
+    }
 }

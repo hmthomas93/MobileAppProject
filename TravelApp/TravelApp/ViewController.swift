@@ -13,7 +13,7 @@ import CoreData
 
 var aryAccount : NSMutableArray!
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
     
     
     
@@ -25,20 +25,49 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //uncomment each of these to delete all of the corresponding core data entries
+        //this will "reset" the app
+        //deleteAllObjects("User")
+        //deleteAllObjects("MainPost")
+        //deleteAllObjects("Comment")
+        
+        txtEmail.delegate = self
+        txtPassword.delegate = self
+        
         aryAccount = NSMutableArray()
         
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
-        view.addGestureRecognizer(tap)
         // Do any additional setup after loading the view.
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
+    //during testing only - this deletes all of a core data entity
+    func deleteAllObjects(entity: String) {
+        var deleteContext: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+        let fetchRequest = NSFetchRequest(entityName: entity)
+        if #available(iOS 9.0, *) {
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            do {
+                try deleteContext.executeRequest(deleteRequest)
+                try deleteContext.save()
+            }
+            catch let _ as NSError {
+                // Handle error
+            }
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
-    func dismissKeyboard(){
-        view.endEditing(true)
+    //make the keyboard disappear with the return key (for the name field only)
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.txtEmail.resignFirstResponder()
+        self.txtPassword.resignFirstResponder()
+        
+        return true
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        self.txtEmail.resignFirstResponder()
+        self.txtPassword.resignFirstResponder()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -140,6 +169,12 @@ class ViewController: UIViewController {
                 })
             self.presentViewController(alert, animated: true, completion: nil)
         }
+    }
+    
+    //This logs the user out when the Log Out button is tapped. Somehow this got deleted before, so I put it back.
+    @IBAction func logout(sender: UIStoryboardSegue) {
+        txtEmail.text = ""
+        txtPassword.text = ""
     }
 
     

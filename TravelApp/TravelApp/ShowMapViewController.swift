@@ -13,11 +13,26 @@ class ShowMapViewController: UIViewController {
 
     @IBOutlet weak var placeMap: MKMapView!
     @IBOutlet weak var mapTypeControl: UISegmentedControl!
+    
+    var attractionName = String()
+    var placeName = String()
+    var lon = Double()
+    var lat = Double()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         placeMap.mapType = .Standard
-        showPlace()
+        
+        if lon != 1000 {
+            showPlace()
+        }
+        else {
+            //no info
+            let alert = UIAlertController(title: "No Location Data", message: "This is not a valid location.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {(ACTION :UIAlertAction) in print("Bad location")}))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
         // Do any additional setup after loading the view.
     }
 
@@ -37,22 +52,24 @@ class ShowMapViewController: UIViewController {
     }
     
     func showPlace() {
-        let location = "Chandler, AZ"
-        //let address = ( sender as! NSString)
+        let coordinates = CLLocationCoordinate2DMake(CLLocationDegrees(lat), CLLocationDegrees(lon))
         
-        var geocoder = CLGeocoder()
-        geocoder.geocodeAddressString (location as String, completionHandler: {(placemarks: [CLPlacemark]?, error: NSError?) -> Void in
-            if let placemark = placemarks?[0] as? CLPlacemark? {
-                let span = MKCoordinateSpanMake(0.05, 0.05)
-                let region = MKCoordinateRegion(center: placemark!.location!.coordinate, span: span)
-                self.placeMap.setRegion(region, animated: true)
-                
-                let ani = MKPointAnnotation()
-                ani.coordinate = placemark!.location!.coordinate
-                ani.title = location
-                self.placeMap.addAnnotation(ani)
-            }
-        })
+        let span = MKCoordinateSpanMake(0.05, 0.05)
+        let region = MKCoordinateRegion(center: coordinates, span: span)
+        self.placeMap.setRegion(region, animated: true)
+        
+        let ani = MKPointAnnotation()
+        ani.coordinate = coordinates
+        
+        if attractionName == "" {
+            ani.title = placeName
+        }
+        else {
+            ani.title = attractionName
+            ani.subtitle = placeName
+        }
+        
+        self.placeMap.addAnnotation(ani)
     }
 
     /*

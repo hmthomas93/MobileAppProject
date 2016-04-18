@@ -9,12 +9,7 @@
 import UIKit
 import CoreData
 
-class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UINavigationControllerDelegate, UIActionSheetDelegate {
-    
-    
-    
-    
-    
+class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet weak var imgProfile: UIImageView!
     
@@ -35,6 +30,12 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UI
         lblWarning.hidden = true
         picker.delegate = self
         
+        txtFirstName.delegate = self
+        txtLastName.delegate = self
+        txtEmail.delegate = self
+        txtPassword.delegate = self
+        txtRePassword.delegate = self
+        
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
         
@@ -50,8 +51,6 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UI
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        
         if self.view.frame.origin.y == 0.0 {
             
         }
@@ -61,7 +60,7 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UI
             })
         }
         self.view.endEditing(true)
-        return false
+        return true
     }
     
     func dismissKeyboard(){
@@ -84,15 +83,8 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UI
     @IBAction func cancel(sender: UIBarButtonItem) {
         navigationController!.popViewControllerAnimated(true)
     }
-    
-    
-    
-    
 
     @IBAction func btnCreateClicked(sender: AnyObject) {
-        
-        
-        
         let strFirstName = txtFirstName.text
         let strLastName = txtLastName.text
         let strEmail = txtEmail.text
@@ -153,11 +145,11 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UI
                     do {
                         try managedContext.save()
                         let alert = UIAlertController(title: "Success!", message: "", preferredStyle: UIAlertControllerStyle.Alert)
-                        alert.addAction(UIAlertAction(title: "User Added", style: UIAlertActionStyle.Default){
+                        alert.addAction(UIAlertAction(title: "Account was successfully created.", style: UIAlertActionStyle.Default){
                             UIAlertAction in
                             self.navigationController?.popViewControllerAnimated(true)
                             })
-                        print ("User added")
+                        
                         self.presentViewController(alert, animated: true, completion: nil)
                     } catch let error as NSError  {
                         let alert = UIAlertController(title: "Failed!", message: "Could not save \(error), \(error.userInfo)", preferredStyle: UIAlertControllerStyle.Alert)
@@ -172,19 +164,7 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UI
         }
         
         /*----------------------------------------------------------------------------------------------------*/
-        
-        
-        
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     @IBAction func btnSelectClicked(sender: AnyObject) {
         
@@ -207,7 +187,7 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate,UI
             alert.addAction(cameraButton)
         }
         else {
-            print("Camera not available")
+            //camera not available
         }
         
         let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (alert) -> Void in
