@@ -2,7 +2,7 @@
 //  MainPost+CoreDataProperties.swift
 //  TravelApp
 //
-//  Created by Sumner Van Schoyck on 4/16/16.
+//  Created by Sumner Van Schoyck on 4/18/16.
 //  Copyright © 2016 Team Taylor Swift. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -17,11 +17,11 @@ extension MainPost {
     @NSManaged var attraction: String?
     @NSManaged var city: String?
     @NSManaged var commentText: String?
+    @NSManaged var latitude: NSNumber?
+    @NSManaged var longitude: NSNumber?
     @NSManaged var placePhoto: NSData?
     @NSManaged var postDate: String?
     @NSManaged var state: String?
-    @NSManaged var latitude: NSNumber?
-    @NSManaged var longitude: NSNumber?
     @NSManaged var comments: NSSet?
     @NSManaged var poster: User?
 

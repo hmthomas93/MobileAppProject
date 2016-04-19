@@ -172,8 +172,7 @@ class AccountMainViewController: UIViewController, UIImagePickerControllerDelega
     //TODO
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if signOutButton === sender {
-            //delete all info
-            
+            //do nothing
         }
     }
     /*

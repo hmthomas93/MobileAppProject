@@ -15,15 +15,11 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var placesMap: MKMapView!
     @IBOutlet weak var mapTypeControl: UISegmentedControl!
     
-<<<<<<< HEAD
     //dictionary so identical places are not mapped twice
     var placeList = [String: [MainPost]]()
     
     //selected place
     var selectedPlace = [MainPost]()
-=======
-    var account : User!
->>>>>>> origin/master
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,10 +27,10 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
         self.placesMap.delegate = self
         self.placesMap.mapType = MKMapType.Standard
         
-<<<<<<< HEAD
         let currentAccount = MasterData.sharedInstance.currentUserProfile
         let places = (currentAccount?.posts?.allObjects)! as! [MainPost]
         
+        //checks if there are any places
         if places.count > 0 {
             //group identical places
             var placeKey = ""
@@ -56,15 +52,11 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
             showPlaces()
         }
         else {
+            //if there aren't any places, show an error
             let alert = UIAlertController(title: "No Places", message: "You have not added any places yet.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }
-=======
-        account = MasterData.sharedInstance.currentUserProfile
-        
-        showPlaces()
->>>>>>> origin/master
         
         // Do any additional setup after loading the view.
     }
@@ -82,15 +74,16 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
             self.placesMap.mapType = MKMapType.Satellite
         }
     }
+    
+    //this puts the pins on the map
     func showPlaces() {
-<<<<<<< HEAD
         let padding = 0.1
         var minLat:CLLocationDegrees = 1000
         var maxLat:CLLocationDegrees = -1000
         var minLon:CLLocationDegrees = 1000
         var maxLon:CLLocationDegrees = -1000
         
-        //get bounds
+        //get map region bounds
         for (name, places) in placeList {
             if places.count > 0 {
                 let place = places[0]
@@ -143,32 +136,10 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
                     self.placesMap.addAnnotation(newAnnotation)
                 }
             }
-=======
-        
-        // get all posts from the current user
-        let posts = account.mutableSetValueForKey("posts")
-        
-        for locations in posts {
-            let city = locations.valueForKey("city") as? String
-            let state = locations.valueForKey("state") as? String
-            
-            let location = city! + ", " + state!
-        
-            var geocoder = CLGeocoder()
-            geocoder.geocodeAddressString (location as String, completionHandler: {(placemarks:         [CLPlacemark]?, error: NSError?) -> Void in
-                if let placemark = placemarks?[0] as? CLPlacemark? {
-                    let span = MKCoordinateSpanMake(0.05, 0.05)
-                    let region = MKCoordinateRegion(center: placemark!.location!.coordinate, span: span)
-                    self.placesMap.setRegion(region, animated: true)
-                
-                    let newAnnotation = PlaceAnnotation(t: "abc", s: "def", c: placemark!.location!.coordinate)
-                    self.placesMap.addAnnotation(newAnnotation)
-                }
-            })
->>>>>>> origin/master
         }
     }
     
+    //this gets the custom map pins
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "PlaceAnnotation"
         
@@ -217,12 +188,12 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if signOutButton === sender {
-            //delete all info
-            
-            
+            //do nothing
         }
         else if(segue.identifier! == "showPhotoDetailSegue") {
-            //pass the data to the detail view
+            //pass the selectedPlace to the detail view
+            var destinationController = segue.destinationViewController as! MyPhotosDetailViewController
+            destinationController.postList = selectedPlace
         }
     }
     

@@ -10,6 +10,8 @@ import UIKit
 
 class MyPhotosDetailViewController: UIViewController {
 
+    var postList = [MainPost]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

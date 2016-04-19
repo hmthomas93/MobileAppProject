@@ -167,9 +167,7 @@ class HomeViewController: UIViewController, UISearchBarDelegate, NSFetchedResult
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if signOutButton === sender {
-            //delete all info
-            
-            
+            //do nothing
         }
         else if segue.identifier == "addPost" {
             var destinationController = segue.destinationViewController as! AddEditPostViewController

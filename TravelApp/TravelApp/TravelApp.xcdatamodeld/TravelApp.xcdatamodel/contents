@@ -29,11 +29,7 @@
     </entity>
     <elements>
         <element name="Comment" positionX="106" positionY="54" width="128" height="118"/>
-<<<<<<< HEAD
         <element name="MainPost" positionX="-81" positionY="-0" width="128" height="195"/>
-=======
-        <element name="MainPost" positionX="-81" positionY="-0" width="128" height="165"/>
->>>>>>> origin/master
         <element name="User" positionX="-290" positionY="-54" width="128" height="133"/>
     </elements>
 </model>
