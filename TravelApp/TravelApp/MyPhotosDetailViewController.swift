@@ -28,16 +28,15 @@ class MyPhotosDetailViewController: UIViewController {
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-<<<<<<< HEAD
-=======
+
         //let numberOfSections  = dataViewController.sections?.count
         //return numberOfSections!
->>>>>>> d8fa1c1ede2cbdb76c7f95f03f4b010e89b14aa3
+
         return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-<<<<<<< HEAD
+
         let numberOfRowsInSection = postList.count
         return numberOfRowsInSection
         //return 3
@@ -45,6 +44,7 @@ class MyPhotosDetailViewController: UIViewController {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
             let cell = tableView.dequeueReusableCellWithIdentifier("myPhotoCell", forIndexPath: indexPath) as! MyPhotosTableViewCell
+            let date = postList[indexPath.row].postDate
             let photo = postList[indexPath.row].placePhoto
             if photo != nil {
                 cell.placePhoto.image = UIImage(data: (photo)! as NSData)
@@ -53,42 +53,16 @@ class MyPhotosDetailViewController: UIViewController {
                 cell.placePhoto.image = nil
             }
         
+            cell.postDate.text = date
+        
+        
             return cell
         
         }
-=======
-        //let numberOfRowsInSection = dataViewController.sections?[section].numberOfObjects
-        //return numberOfRowsInSection!
-        return 3
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("myPhotoCell", forIndexPath: indexPath) as! MyPhotosTableViewCell
-        /*let placeInfo = dataViewController.objectAtIndexPath(indexPath) as! Place
-        let name = placeInfo.name
-        let photo = placeInfo.photo
-        
-        cell.placeName.text = name
-        if photo != nil {
-        cell.placePhoto.image = UIImage(data: (photo)! as NSData)
-        }
-        else {
-        cell.placePhoto.image = nil
-        }*/
-        //dummy data
-        //cell.personPhoto.image = UIImage(named: "nophoto.png")
-        //cell.placePhoto.image = UIImage(named: "home.png")
-        
-        return cell
-        
-    }
->>>>>>> d8fa1c1ede2cbdb76c7f95f03f4b010e89b14aa3
-    
+
     func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
         return true
     }
-<<<<<<< HEAD
-=======
     
     func tableView(tableView: UITableView!, commitEditingStyle editingStyle:   UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
         /*if (editingStyle == UITableViewCellEditingStyle.Delete) {
@@ -111,6 +85,5 @@ class MyPhotosDetailViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
->>>>>>> d8fa1c1ede2cbdb76c7f95f03f4b010e89b14aa3
 
 }
