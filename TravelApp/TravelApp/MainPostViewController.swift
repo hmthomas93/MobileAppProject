@@ -79,6 +79,10 @@ class MainPostViewController: UIViewController, UITextViewDelegate, UpdatePostIn
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "screenTouched:")
         view.addGestureRecognizer(tap)
+        
+        //move UI up or down as keyboard shows and hides
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
         // Do any additional setup after loading the view.
     }
 
@@ -87,21 +91,21 @@ class MainPostViewController: UIViewController, UITextViewDelegate, UpdatePostIn
         // Dispose of any resources that can be recreated.
     }
     
-    func textViewDidBeginEditing(textView: UITextView) {
+    // move the view upwards as keyboard appears
+    func keyboardWillShow(sender: NSNotification) {
         if self.view.frame.origin.y == 0.0 {
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = self.view.frame.origin.y - 220
-            })
+            self.view.frame.origin.y -= 200
+        }
+    }
+    
+    // move the keyboard back as keyboard disapears
+    func keyboardWillHide(sender: NSNotification) {
+        if self.view.frame.origin.y != 0.0 {
+            self.view.frame.origin.y += 200
         }
     }
     
     func screenTouched(sender: UITapGestureRecognizer){
-        if self.view.frame.origin.y != 0.0 {
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = self.view.frame.origin.y + 220
-            })
-        }
-        
         //if the user tapped the table view, load the table view
         let touch = sender.locationInView(commentsTable)
         if let indexPath = commentsTable.indexPathForRowAtPoint(touch) {
@@ -162,7 +166,26 @@ class MainPostViewController: UIViewController, UITextViewDelegate, UpdatePostIn
     }
     
     func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
-        return false
+        let commentInfo = commentList[indexPath.row]
+        //only allow a user to delete their own comments
+        if(commentInfo.posterName == currentUserFName + " " + currentUserLName) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    func tableView(tableView: UITableView!, commitEditingStyle editingStyle:   UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
+        if (editingStyle == UITableViewCellEditingStyle.Delete) {
+            let record = commentList[indexPath.row]
+            context.deleteObject(record)
+            do {
+                try context.save()
+            } catch _ {
+            }
+            commentsTable.reloadData()
+        }
     }
     
     //This method doesn't work with the UITapGestureRecognizer
@@ -270,7 +293,7 @@ class MainPostViewController: UIViewController, UITextViewDelegate, UpdatePostIn
         
         personNameField.text = (currentPost?.poster!.firstName)! + " " + (currentPost?.poster!.lastName)!
         var placeName = ""
-        if currentPost?.attraction != nil {
+        if currentPost?.attraction != "" {
             placeName += ((currentPost?.attraction)! + " in ")
         }
         placeName += (currentPost?.city)! + ", " + (currentPost?.state)!

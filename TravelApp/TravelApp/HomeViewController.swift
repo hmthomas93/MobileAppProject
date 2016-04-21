@@ -19,6 +19,9 @@ class HomeViewController: UIViewController, UISearchBarDelegate, NSFetchedResult
     
     var dataViewController: NSFetchedResultsController = NSFetchedResultsController()
     
+    var currentUserFName: String = String()
+    var currentUserLName: String = String()
+    
     func getFetchResultsController() -> NSFetchedResultsController {
         
         dataViewController = NSFetchedResultsController(fetchRequest: listFetchRequest(), managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
@@ -28,14 +31,28 @@ class HomeViewController: UIViewController, UISearchBarDelegate, NSFetchedResult
     }
     
     func listFetchRequest() -> NSFetchRequest {
+        var searchText = searchBar.text!
+        searchText = searchText.stringByReplacingOccurrencesOfString(",", withString: "")
+        while searchText.rangeOfString("  ") != nil {
+            searchText = searchText.stringByReplacingOccurrencesOfString("  ", withString: " ")
+        }
+        let words = searchText.componentsSeparatedByString(" ")
         
         let fetchRequest = NSFetchRequest(entityName: "MainPost")
         let sortDescripter = NSSortDescriptor(key: "postDate", ascending: false)
         fetchRequest.sortDescriptors = [sortDescripter]
-        let attractionPredicate = NSPredicate(format: "attraction like[cd] %@", "*" + searchBar.text! + "*")
-        let cityPredicate = NSPredicate(format: "city like[cd] %@", "*" + searchBar.text! + "*")
-        let statePredicate = NSPredicate(format: "state like[cd] %@", "*" + searchBar.text! + "*")
-        let predicate = NSCompoundPredicate.init(orPredicateWithSubpredicates: [attractionPredicate, cityPredicate, statePredicate])
+        
+        var predicates:[NSPredicate] = []
+        
+        for word in words {
+            let attractionPredicate = NSPredicate(format: "attraction like[cd] %@", "*" + word + "*")
+            let cityPredicate = NSPredicate(format: "city like[cd] %@", "*" + word + "*")
+            let statePredicate = NSPredicate(format: "state like[cd] %@", "*" + word + "*")
+            predicates.append(NSCompoundPredicate.init(orPredicateWithSubpredicates: [attractionPredicate, cityPredicate, statePredicate]))
+        }
+        
+        let predicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: predicates)
+        let newPredicate = NSCompoundPredicate.init()
         fetchRequest.predicate = predicate
         
         return fetchRequest
@@ -57,6 +74,10 @@ class HomeViewController: UIViewController, UISearchBarDelegate, NSFetchedResult
         
         mainPostTable.estimatedRowHeight = 256
         mainPostTable.rowHeight = UITableViewAutomaticDimension
+        
+        let currentAccount = MasterData.sharedInstance.currentUserProfile
+        currentUserFName = currentAccount!.valueForKey("firstName") as! String
+        currentUserLName = currentAccount!.valueForKey("lastName") as! String
         // Do any additional setup after loading the view.
     }
 
@@ -150,7 +171,26 @@ class HomeViewController: UIViewController, UISearchBarDelegate, NSFetchedResult
     }
     
     func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
-        return false
+        let mainPostInfo = dataViewController.objectAtIndexPath(indexPath) as! MainPost
+        //only allow a user to delete their own posts
+        if(mainPostInfo.poster!.firstName == currentUserFName && mainPostInfo.poster!.lastName == currentUserLName) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    func tableView(tableView: UITableView!, commitEditingStyle editingStyle:   UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
+        if (editingStyle == UITableViewCellEditingStyle.Delete) {
+            let record = dataViewController.objectAtIndexPath(indexPath) as! MainPost
+            context.deleteObject(record)
+            do {
+                try context.save()
+            } catch _ {
+            }
+            mainPostTable.reloadData()
+        }
     }
 
     /*
@@ -166,6 +206,8 @@ class HomeViewController: UIViewController, UISearchBarDelegate, NSFetchedResult
     
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        searchBar.endEditing(true)
+        
         if signOutButton === sender {
             //do nothing
         }

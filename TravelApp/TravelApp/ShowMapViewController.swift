@@ -54,7 +54,7 @@ class ShowMapViewController: UIViewController {
     func showPlace() {
         let coordinates = CLLocationCoordinate2DMake(CLLocationDegrees(lat), CLLocationDegrees(lon))
         
-        let span = MKCoordinateSpanMake(0.05, 0.05)
+        let span = MKCoordinateSpanMake(0.1, 0.1)
         let region = MKCoordinateRegion(center: coordinates, span: span)
         self.placeMap.setRegion(region, animated: true)
         

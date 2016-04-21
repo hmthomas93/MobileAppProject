@@ -39,39 +39,32 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
         
+        //move UI up or down as keyboard shows and hides
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
         // Do any additional setup after loading the view.
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
+    // move the view upwards as keyboard appears
+    func keyboardWillShow(sender: NSNotification) {
         if self.view.frame.origin.y == 0.0 {
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = self.view.frame.origin.y - 100
-            })
+            self.view.frame.origin.y -= 100
+        }
+    }
+    
+    // move the keyboard back as keyboard disapears
+    func keyboardWillHide(sender: NSNotification) {
+        if self.view.frame.origin.y != 0.0 {
+            self.view.frame.origin.y += 100
         }
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        if self.view.frame.origin.y == 0.0 {
-            
-        }
-        else{
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = 0.0
-            })
-        }
         self.view.endEditing(true)
         return true
     }
     
     func dismissKeyboard(){
-        if self.view.frame.origin.y == 0.0 {
-            
-        }
-        else{
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = 0.0
-            })
-        }
         view.endEditing(true)
     }
     
@@ -145,7 +138,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, UIImagePicker
                     do {
                         try managedContext.save()
                         let alert = UIAlertController(title: "Success!", message: "", preferredStyle: UIAlertControllerStyle.Alert)
-                        alert.addAction(UIAlertAction(title: "Account was successfully created.", style: UIAlertActionStyle.Default){
+                        alert.addAction(UIAlertAction(title: "Account created.", style: UIAlertActionStyle.Default){
                             UIAlertAction in
                             self.navigationController?.popViewControllerAnimated(true)
                             })

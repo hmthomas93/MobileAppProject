@@ -145,13 +145,8 @@
                                                     <action selector="btnSelectClicked:" destination="IcS-9p-X72" eventType="touchUpInside" id="Gt9-tT-Aqu"/>
                                                 </connections>
                                             </button>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KxU-NW-02e">
-                                                <rect key="frame" x="166" y="194" width="415" height="30"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gk0-sc-5Hk">
-                                                <rect key="frame" x="164" y="232" width="416" height="30"/>
+                                                <rect key="frame" x="165" y="232" width="416" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
@@ -189,17 +184,22 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="GZI-f6-6wR">
-                                                <rect key="frame" x="240" y="453" width="96" height="30"/>
+                                                <rect key="frame" x="240" y="453" width="107" height="30"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3rl-NY-uG8">
-                                                        <rect key="frame" x="0.0" y="0.0" width="96" height="30"/>
-                                                        <state key="normal" title="Create Button"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3rl-NY-uG8">
+                                                        <rect key="frame" x="0.0" y="0.0" width="107" height="30"/>
+                                                        <state key="normal" title="Create Account"/>
                                                         <connections>
                                                             <action selector="btnCreateClicked:" destination="IcS-9p-X72" eventType="touchUpInside" id="XqC-2k-IcM"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KxU-NW-02e">
+                                                <rect key="frame" x="165" y="194" width="415" height="30"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -214,21 +214,21 @@
                                             <constraint firstAttribute="trailing" secondItem="i2U-3t-faF" secondAttribute="trailing" constant="19" id="LyI-vL-YbL"/>
                                             <constraint firstAttribute="trailing" secondItem="9e8-7w-FUw" secondAttribute="trailing" constant="19" id="NgZ-b9-TcZ"/>
                                             <constraint firstItem="rfm-8Z-JEj" firstAttribute="top" secondItem="wKp-Uk-E4N" secondAttribute="bottom" constant="18" id="R8S-nW-XTa"/>
-                                            <constraint firstItem="gk0-sc-5Hk" firstAttribute="leading" secondItem="leb-T6-xy3" secondAttribute="trailing" constant="57" id="TIO-lG-p23"/>
+                                            <constraint firstItem="gk0-sc-5Hk" firstAttribute="leading" secondItem="leb-T6-xy3" secondAttribute="trailing" constant="58" id="TIO-lG-p23"/>
                                             <constraint firstItem="4ae-Ql-wZg" firstAttribute="leading" secondItem="PwV-Cr-seh" secondAttribute="leading" constant="20" id="Uj9-3K-fsF"/>
-                                            <constraint firstAttribute="trailing" secondItem="FCY-Fn-OF5" secondAttribute="trailing" constant="20" id="Ypb-BE-Ae4"/>
+                                            <constraint firstAttribute="trailing" secondItem="FCY-Fn-OF5" secondAttribute="trailing" constant="19" id="Ypb-BE-Ae4"/>
                                             <constraint firstAttribute="height" constant="536" id="bGN-eX-kUn"/>
                                             <constraint firstItem="D5u-HR-I9M" firstAttribute="leading" secondItem="PwV-Cr-seh" secondAttribute="leading" constant="20" id="daM-qd-5SY"/>
                                             <constraint firstItem="gk0-sc-5Hk" firstAttribute="top" secondItem="KxU-NW-02e" secondAttribute="bottom" constant="8" id="db4-Lv-10B"/>
                                             <constraint firstItem="D5u-HR-I9M" firstAttribute="top" secondItem="PwV-Cr-seh" secondAttribute="top" constant="20" id="diZ-JI-YQA"/>
                                             <constraint firstItem="KxU-NW-02e" firstAttribute="top" secondItem="PwV-Cr-seh" secondAttribute="top" constant="194" id="e0e-wh-JbD"/>
                                             <constraint firstItem="wKp-Uk-E4N" firstAttribute="top" secondItem="4ae-Ql-wZg" secondAttribute="bottom" constant="16" id="eUW-51-Tt8"/>
-                                            <constraint firstItem="FCY-Fn-OF5" firstAttribute="leading" secondItem="rfm-8Z-JEj" secondAttribute="trailing" constant="8" id="gkX-jX-2da"/>
+                                            <constraint firstItem="FCY-Fn-OF5" firstAttribute="leading" secondItem="rfm-8Z-JEj" secondAttribute="trailing" constant="9" id="gkX-jX-2da"/>
                                             <constraint firstItem="naJ-QP-QwI" firstAttribute="centerX" secondItem="D5u-HR-I9M" secondAttribute="centerX" id="igX-5q-2zm"/>
                                             <constraint firstItem="leb-T6-xy3" firstAttribute="top" secondItem="Sc6-su-Tkm" secondAttribute="bottom" constant="17" id="kfP-Sm-h1Z"/>
                                             <constraint firstItem="1Vf-1z-s5M" firstAttribute="centerX" secondItem="PwV-Cr-seh" secondAttribute="centerX" id="l8O-Yh-QeP"/>
                                             <constraint firstItem="Sc6-su-Tkm" firstAttribute="top" secondItem="naJ-QP-QwI" secondAttribute="bottom" constant="12" id="nDz-ee-Wnh"/>
-                                            <constraint firstAttribute="trailing" secondItem="gk0-sc-5Hk" secondAttribute="trailing" constant="20" id="ngL-B0-Wfg"/>
+                                            <constraint firstAttribute="trailing" secondItem="gk0-sc-5Hk" secondAttribute="trailing" constant="19" id="ngL-B0-Wfg"/>
                                             <constraint firstItem="GZI-f6-6wR" firstAttribute="centerX" secondItem="PwV-Cr-seh" secondAttribute="centerX" id="pMB-zs-VJc"/>
                                             <constraint firstItem="FCY-Fn-OF5" firstAttribute="top" secondItem="9e8-7w-FUw" secondAttribute="bottom" constant="8" id="qAB-2g-HbZ"/>
                                             <constraint firstItem="9e8-7w-FUw" firstAttribute="leading" secondItem="wKp-Uk-E4N" secondAttribute="trailing" constant="66" id="tRp-DS-PEM"/>

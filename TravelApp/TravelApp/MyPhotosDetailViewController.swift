@@ -43,29 +43,27 @@ class MyPhotosDetailViewController: UIViewController {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCellWithIdentifier("myPhotoCell", forIndexPath: indexPath) as! MyPhotosTableViewCell
-            let date = postList[indexPath.row].postDate
-            let photo = postList[indexPath.row].placePhoto
-            if photo != nil {
-                cell.placePhoto.image = UIImage(data: (photo)! as NSData)
-            }
-            else {
-                cell.placePhoto.image = nil
-            }
-        
-            cell.postDate.text = date
-        
-        
-            return cell
-        
+        let cell = tableView.dequeueReusableCellWithIdentifier("myPhotoCell", forIndexPath: indexPath) as! MyPhotosTableViewCell
+        let date = postList[indexPath.row].postDate
+        let photo = postList[indexPath.row].placePhoto
+        if photo != nil {
+            cell.placePhoto.image = UIImage(data: (photo)! as NSData)
         }
+        else {
+            cell.placePhoto.image = nil
+        }
+    
+        cell.postDate.text = date
+    
+        return cell
+    }
 
     func tableView(tableView: UITableView!, canEditRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
-        return true
+        return false
     }
     
-    func tableView(tableView: UITableView!, commitEditingStyle editingStyle:   UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
-        /*if (editingStyle == UITableViewCellEditingStyle.Delete) {
+    /*func tableView(tableView: UITableView!, commitEditingStyle editingStyle:   UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
+        if (editingStyle == UITableViewCellEditingStyle.Delete) {
         let record = dataViewController.objectAtIndexPath(indexPath) as! Place
         context.deleteObject(record)
         do {
@@ -73,8 +71,8 @@ class MyPhotosDetailViewController: UIViewController {
         } catch _ {
         }
         
-        }*/
-    }
+        }
+    }*/
 
     /*
     // MARK: - Navigation

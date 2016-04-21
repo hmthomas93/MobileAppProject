@@ -52,6 +52,9 @@ class AddEditPostViewController: UIViewController, UITextFieldDelegate, UITextVi
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
         view.addGestureRecognizer(tap)
         
+        //move UI up or down as keyboard shows and hides
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
         // Do any additional setup after loading the view.
     }
 
@@ -60,19 +63,17 @@ class AddEditPostViewController: UIViewController, UITextFieldDelegate, UITextVi
         // Dispose of any resources that can be recreated.
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
+    // move the view upwards as keyboard appears
+    func keyboardWillShow(sender: NSNotification) {
         if self.view.frame.origin.y == 0.0 {
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = self.view.frame.origin.y - 200
-            })
+            self.view.frame.origin.y -= 200
         }
     }
     
-    func textViewDidBeginEditing(textView: UITextView) {
-        if self.view.frame.origin.y == 0.0 {
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = self.view.frame.origin.y - 200
-            })
+    // move the keyboard back as keyboard disapears
+    func keyboardWillHide(sender: NSNotification) {
+        if self.view.frame.origin.y != 0.0 {
+            self.view.frame.origin.y += 200
         }
     }
     
@@ -82,22 +83,10 @@ class AddEditPostViewController: UIViewController, UITextFieldDelegate, UITextVi
         self.cityField.resignFirstResponder()
         self.stateField.resignFirstResponder()
         
-        if self.view.frame.origin.y != 0.0 {
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = self.view.frame.origin.y + 200
-            })
-        }
-        
         return true
     }
     
     func dismissKeyboard(){
-        if self.view.frame.origin.y != 0.0 {
-            UIView.animateWithDuration(0.3, animations: {
-                self.view.frame.origin.y = self.view.frame.origin.y + 200
-            })
-        }
-        
         view.endEditing(true)
     }
     

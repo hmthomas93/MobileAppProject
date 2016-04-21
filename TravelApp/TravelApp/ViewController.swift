@@ -93,7 +93,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 aryAccount = NSMutableArray(array: results)
             }
             else{
-                print("No results. Possible error.")
+                print("No results.")
             }
             
         }
@@ -118,9 +118,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             if  email == strEmail {
                 if password == strPassword {
-                    
-                    print("login = true")
-                    
                     isLogin = true
                     MasterData.sharedInstance.currentUserProfile = account as? User
                     
@@ -151,21 +148,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
             }
         }
         //Pop-up notifications. Can get rid of these if wanted.
-        if isLogin == true {
-            print("account")
-            let alert = UIAlertController(title: "Login Successful", message: "", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default){
-                UIAlertAction in
-                
-                })
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        else{
+        //Show an error if the login credentials are invalid
+        if isLogin == false {
             print("no account")
             let alert = UIAlertController(title: "No account found", message: "", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default){
                 UIAlertAction in
-        
+                
                 })
             self.presentViewController(alert, animated: true, completion: nil)
         }

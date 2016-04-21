@@ -8,12 +8,15 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class MyPhotosViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var signOutButton: UIBarButtonItem!
     @IBOutlet weak var placesMap: MKMapView!
     @IBOutlet weak var mapTypeControl: UISegmentedControl!
+    
+    var places = [MainPost]()
     
     //dictionary so identical places are not mapped twice
     var placeList = [String: [MainPost]]()
@@ -27,8 +30,17 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
         self.placesMap.delegate = self
         self.placesMap.mapType = MKMapType.Standard
         
-        let currentAccount = MasterData.sharedInstance.currentUserProfile
-        let places = (currentAccount?.posts?.allObjects)! as! [MainPost]
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        placeList = [String: [MainPost]]()
+        
+        placesMap.removeAnnotations(placesMap.annotations)
+        
+        loadPlaces()
         
         //checks if there are any places
         if places.count > 0 {
@@ -48,8 +60,6 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
                     placeList[placeKey]?.append(place)
                 }
             }
-            
-            showPlaces()
         }
         else {
             //if there aren't any places, show an error
@@ -57,8 +67,15 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alert, animated: true, completion: nil)
         }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         
-        // Do any additional setup after loading the view.
+        //drop the pins
+        if places.count > 0 {
+            showPlaces()
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -75,9 +92,35 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    //load a user's places from core data
+    func loadPlaces() {
+        var context: NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+        
+        let request = NSFetchRequest(entityName: "MainPost")
+        //request.returnsObjectsAsFaults = false
+        
+        let currentAccount = MasterData.sharedInstance.currentUserProfile
+        
+        let sortDescripter = NSSortDescriptor(key: "postDate", ascending: false)
+        request.sortDescriptors = [sortDescripter]
+        let predicate = NSPredicate(format: "poster == %@", currentAccount!)
+        request.predicate = predicate
+        
+        do {
+            let results:NSArray = try context.executeFetchRequest(request)
+            
+            if (results.count > 0){
+                places = results as! [MainPost]
+            }
+        }
+        catch let fetchError as NSError {
+            print("error: \(fetchError.localizedDescription)")
+        }
+    }
+    
     //this puts the pins on the map
     func showPlaces() {
-        let padding = 0.1
+        let paddingFactor = 1.5
         var minLat:CLLocationDegrees = 1000
         var maxLat:CLLocationDegrees = -1000
         var minLon:CLLocationDegrees = 1000
@@ -103,17 +146,16 @@ class MyPhotosViewController: UIViewController, MKMapViewDelegate {
             }
         }
         
-        //add padding to bounds
-        minLat -= padding
-        maxLat += padding
-        minLon -= padding
-        maxLon += padding
-        
+        //calculate center
         let centerLat = (minLat + maxLat) / 2.0
         let centerLon = (minLon + maxLon) / 2.0
         
-        let spanLat = maxLat - minLat
-        let spanLon = maxLon - minLon
+        //calculate span
+        var spanLat = maxLat - minLat
+        var spanLon = maxLon - minLon
+        
+        spanLat = max(spanLat * paddingFactor, 0.05)
+        spanLon = max(spanLon * paddingFactor, 0.05)
         
         //now set map bounds
         var coordinates = CLLocationCoordinate2DMake(centerLat, centerLon)
